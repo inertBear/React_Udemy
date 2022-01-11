@@ -1,11 +1,9 @@
-import React from "react"; //unneeded, because it is used under the hood. If we did not use the JSX, this would be required
+import React, { useState } from "react"; //unneeded, because it is used under the hood. If we did not use the JSX, this would be required
 
 import Expenses from "./components/Expenses/Expenses";
+import NewExpense from "./components/NewExpenses/NewExpense";
 
-// this is what is displayed when the browser. it is transformed before delivering it to the browser is launched to test the code using 'npm start'
-function App() {
-  // hardcode some expenses (these would traditionally be queried from some long term storage)
-  const expenses = [
+  const INITIAL_EXPENSES = [
     {
       id: "e1",
       title: "Toilet Paper",
@@ -27,11 +25,25 @@ function App() {
     },
   ];
 
+// this is what is displayed when the browser. it is transformed before delivering it to the browser is launched to test the code using 'npm start'
+function App() {
+  const [expenses, setExpenses] = useState(INITIAL_EXPENSES);
+
+  // callback for NewExpense to add a new expense entered by the user
+  function onAddExpense(expense) {
+    console.log(expense);
+    setExpenses((prevExpenses) => {
+      return [expense, ...prevExpenses];
+    });
+    // TODO: trigger the filter to refresh, in case the new expense was added for the year that is currently being filtered
+
+  };
+
   // the expenses are passed to the next Component(Expenses) via 'props'
   return (
     <div>
-      <h2>Let's get started</h2>
-      <Expenses expenses={expenses} />
+      <NewExpense onAddedExpense={onAddExpense}/>
+      <Expenses items={expenses} />
     </div>
   );
 
